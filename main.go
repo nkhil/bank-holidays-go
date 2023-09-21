@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
 type Holidays struct {
@@ -24,7 +25,7 @@ func main() {
 	}
 
 	if res.StatusCode != 200 {
-		panic("Non 200 status code")
+		panic("Non 200 status code, something's wrong")
 	}
 
 	body, err := io.ReadAll(res.Body)
@@ -40,11 +41,26 @@ func main() {
 
 	events := holidays.EnglandAndWales.Events
 
+  today := time.Now()
+  limit, err := time.Parse("2006-01-02", "2025-01-01")
+
+  if err != nil {
+    panic(err)
+  }
+
 	for _, e := range events {
-		fmt.Printf(
-			"%s - %s\n",
-			e.Title,
-			e.Date,
-		)
+    parsed, err := time.Parse("2006-01-02", e.Date)
+
+    if err != nil {
+      panic(err )
+    }
+
+    if parsed.After(today) && parsed.Before(limit) {
+      fmt.Printf(
+        "%s - %s\n",
+        e.Title,
+        e.Date,
+      )
+    }
 	}
 }
