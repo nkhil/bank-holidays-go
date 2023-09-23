@@ -21,13 +21,13 @@ type Holidays struct {
 }
 
 func main() {
-	refreshData := false
+	shouldRefreshData := false
 	var events Events
 	if len(os.Args) >= 2 && os.Args[1] == "--refresh" {
-		refreshData = true
+		shouldRefreshData = true
 	}
 
-	if refreshData == true {
+	if shouldRefreshData == true {
 		res, err := http.Get("https://www.gov.uk/bank-holidays.json")
 
 		if err != nil {
